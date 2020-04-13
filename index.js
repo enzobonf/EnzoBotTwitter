@@ -63,7 +63,7 @@ function favorite(tweet){
 
             let tweet = data.statuses[0];
         
-            if(tweet.id_str && !tweet.retweeted_status){
+            if(tweet && tweet.id_str && !tweet.retweeted_status){
                 retweet(tweet);
                 favorite(tweet);
             }
