@@ -11,9 +11,38 @@ const bot = new twit(credentials);
     tweet_mode: 'extended'
 }); */
 
-let tweetsRetweetados = 0;
-let tweetsFavoritados = 0;
+let tweetsRetweetados = [];
+let tweetsFavoritados = [];
 
+function search(q, lang, count){
+
+    return new Promise((resolve, reject)=>{
+
+        bot.get('search/tweets', {q, lang, count}, function(err, data, response) {
+            
+            if(err){
+                reject(err);
+            }
+            else{
+                let id, tweet = data.statuses[0];
+                if(tweet !== undefined) id = tweet.id_str;
+
+                if(tweet && id && !tweet.retweeted_status && tweetsRetweetados.indexOf(id) === -1){
+                    resolve(tweet);
+                }
+                else{
+                    console.log('\nTweet já retweetado ou com erro, daqui a 20 segundos será procurado outro');
+                    setTimeout(() => {
+                        search(q, lang, count);
+                    }, 20000);     
+                }
+            }
+
+        });
+
+    });
+
+}
 
 function retweet(tweet){
 
@@ -21,8 +50,10 @@ function retweet(tweet){
 
     bot.post('statuses/retweet/:id', {id}, (err, data, response)=>{
         if(!err){
-            tweetsRetweetados++;      
-            console.log('Nº de tweets retweetados', tweetsRetweetados);
+            tweetsRetweetados.push(id);  
+            console.log('\nRetweetado:', tweet.text);
+            console.log('Nº de tweets retweetados:', tweetsRetweetados.length);
+            console.log('IDs:', tweetsRetweetados);
         }
         else{
             console.error('ERRO retweet:', err.message);
@@ -32,23 +63,19 @@ function retweet(tweet){
 }
 
 function favorite(tweet){
-    try{
-        const id = tweet.id_str;
 
-        bot.post('favorites/create', {id}, (err, response)=>{
-            if(!err){
-                tweetsFavoritados++;
-                console.log('Nº de tweets favoritados:', tweetsFavoritados);
-                console.log(tweet.text, id);
-            }
-            else{
-                console.log('ERRO fav:', err.message);
-            }
-        });
-    }
-    catch(e){
-        console.error('ERRO:', e);
-    }
+    const id = tweet.id_str;
+
+    bot.post('favorites/create', {id}, (err, response)=>{
+        if(!err){
+            tweetsFavoritados.push(id);
+            console.log('Nº de tweets favoritados:', tweetsFavoritados.length);
+            console.log(tweet.text, id);
+        }
+        else{
+            console.log('ERRO fav:', err.message);
+        }
+    });
 
 }
 
@@ -56,7 +83,7 @@ function favorite(tweet){
  setInterval(() => {
 
     try{
-        bot.get('search/tweets', { q: '"Enzo"', lang: 'pt', count: 1 }, function(err, data, response) {
+        /*bot.get('search/tweets', { q: '"Enzo"', lang: 'pt', count: 1 }, function(err, data, response) {
 
             let tweet = data.statuses[0];
         
@@ -65,15 +92,25 @@ function favorite(tweet){
                 favorite(tweet);
             }
 
+        });*/
+
+        search('"Enzo"', 'pt', 1).then(tweet=>{
+
+            if(tweet && tweet.id_str && !tweet.retweeted_status){
+                retweet(tweet);
+                //favorite(tweet);
+            }
+
+        }).catch(err=>{
+            console.log(err);
         });
 
     }
     catch(e){
         console.log('ERRO:', e);
     }
-    
 
-}, 45000);
+}, 40000);
 
 /* setInterval(() => {
     bot.get('search/tweets', { q: 'Enzo', count: 1 }, function(err, data, response) {
