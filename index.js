@@ -31,7 +31,7 @@ function search(q, lang, count){
                     resolve(tweet);
                 }
                 else{
-                    console.log('\nTweet já retweetado ou com erro, daqui a 20 segundos será procurado outro');
+                    console.log('\nTweet já retweetado, com erro, ou é retweet, daqui a 20 segundos será procurado outro');
                     setTimeout(() => {
                         search(q, lang, count);
                     }, 20000);     
@@ -96,10 +96,7 @@ function favorite(tweet){
 
         search('"Enzo"', 'pt', 1).then(tweet=>{
 
-            if(tweet && tweet.id_str && !tweet.retweeted_status){
-                retweet(tweet);
-                //favorite(tweet);
-            }
+            retweet(tweet);
 
         }).catch(err=>{
             console.log(err);
