@@ -1,0 +1,9 @@
+{
+    "apps": [
+        {
+            "name": "Enzo Bot Twitter",
+            "script": "npm",
+            "args" : "start"
+        }
+    ]
+}

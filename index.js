@@ -6,17 +6,14 @@ const favoriteInterval = 60 * 1000;
 
 const bot = new twit(credentials);
 
-const stream = bot.stream('statuses/filter', {
+/* const stream = bot.stream('statuses/filter', {
     track: 'Enzo',
     tweet_mode: 'extended'
-});
+}); */
 
 let tweetsRetweetados = 0;
 let tweetsFavoritados = 0;
 
-function search(){
-    
-}
 
 function retweet(tweet){
 
@@ -59,7 +56,7 @@ function favorite(tweet){
  setInterval(() => {
 
     try{
-        bot.get('search/tweets', { q: '"Enzo"', count: 1 }, function(err, data, response) {
+        bot.get('search/tweets', { q: '"Enzo"', lang: 'pt', count: 1 }, function(err, data, response) {
 
             let tweet = data.statuses[0];
         
