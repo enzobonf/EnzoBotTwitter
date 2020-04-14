@@ -46,31 +46,37 @@ function search(q, lang, count){
                 reject(err);
             }
             else{
-                let id, tweet = data.statuses[0], inResponseTo, text;
+                let id, tweet = data.statuses[0], inResponseTo, text, usersMentioned = [];
 
                 if(tweet !== undefined) {
 
-                    console.log('\n tweet:', tweet.text);
+                    console.log('\n tweet:', tweet);
+                    
+                    if(tweet.entities.user_mentions.length > 0){
+                        tweet.entities.user_mentions.forEach(user=>{
+                            if(wordCount(user.screen_name.toLowerCase(), 'enzo') >= 1) usersMentioned.push(user.screen_name.toLowerCase());
+                            tweet.text = (tweet.text).replace(`@${user.screen_name}`, '');
+                        });
+                    }
 
                     id = tweet.id_str;
 
-                    inResponseTo = tweet.in_reply_to_screen_name;
+                    /* inResponseTo = tweet.in_reply_to_screen_name;
                     (inResponseTo !== null) ? inResponseTo = inResponseTo.toLowerCase() : '';
-
+ */
                     //(!tweet.truncated) ? text = tweet.text : text = tweet.extended_tweet.full_text;
+
                     text = tweet.text;
+                    console.log('\nTweet:', text);
                     text = text.toLowerCase();
 
                     console.log('Quantas vezes Enzo aparece no tweet:', wordCount(text, 'enzo'));
 
-                    console.log(inResponseTo);
-
                     //console.log(tweet.text.toLowerCase());
-                    console.log(text.indexOf('enzo'));
+                    //console.log(text.indexOf('enzo'));
 
-
-                    if(tweet && id && !tweet.retweeted_status && tweetsRetweetados.indexOf(id) === -1 && text.indexOf('enzo') !== -1
-                    && (inResponseTo === null || wordCount(text.replace(inResponseTo), 'enzo') >= 1)){
+                    if(tweet && id && (!tweet.retweeted_status || wordCount((tweet.retweeted_status.text).toLowerCase(), 'enzo') >= 1) && tweetsRetweetados.indexOf(id) === -1 && text.indexOf('enzo') !== -1
+                    && (inResponseTo === null || wordCount(text, 'enzo') >= 1)){
                         resolve(tweet);
                     }
                     else{
@@ -102,7 +108,7 @@ function retweet(tweet){
                 resolve({text: tweet.text, id});
             }
             else{
-                reject('ERRO retweet:', err.message);
+                reject(err);
             }
         });
 
@@ -133,8 +139,12 @@ function retweet(tweet){
 
 } */
 
+/*search('Veja até o final pra alegrar a sua quarentena!', 'pt', 1).then(tweet=>{
+    if(tweet) retweet(tweet);
+});*/
 
- setInterval(() => {
+
+setInterval(() => {
 
     try{
 
@@ -148,7 +158,7 @@ function retweet(tweet){
                     console.log('Retweetado:', response.text);
     
                 }).catch(err=>{
-                    console.log(err);
+                    console.log('ERRO retweet:', err.message);
                 });
             }
             else{
@@ -164,7 +174,7 @@ function retweet(tweet){
         console.log('ERRO no setInterval()', e);
     }
 
-}, 40000);
+}, 37000);
 
 /* setInterval(() => {
     bot.get('search/tweets', { q: 'Enzo', count: 1 }, function(err, data, response) {
