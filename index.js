@@ -53,7 +53,6 @@ function retweet(tweet){
             tweetsRetweetados.push(id);  
             console.log('\nRetweetado:', tweet.text);
             console.log('Nº de tweets retweetados:', tweetsRetweetados.length);
-            console.log('IDs:', tweetsRetweetados);
         }
         else{
             console.error('ERRO retweet:', err.message);
