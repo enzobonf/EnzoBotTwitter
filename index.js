@@ -74,10 +74,7 @@ function search(q, lang, count){
                         resolve(tweet);
                     }
                     else{
-                        console.log('\nTweet não contém "Enzo", já retweetado, com erro, ou é retweet, daqui a 20 segundos será procurado outro');
-                        setTimeout(() => {
-                            search(q, lang, count);
-                        }, 40000);     
+                        resolve(false);
                     }
 
                 }
@@ -143,15 +140,21 @@ function retweet(tweet){
 
         search('"Enzo"', 'pt', 1).then(tweet=>{
 
-            retweet(tweet).then(response=>{
+            if(tweet){
 
-                console.log('Nº de tweets retweetados:', tweetsRetweetados.length);
-                console.log('Retweetado:', response.text);
+                retweet(tweet).then(response=>{
 
-            }).catch(err=>{
-                console.log(err);
-            });
-
+                    console.log('Nº de tweets retweetados:', tweetsRetweetados.length);
+                    console.log('Retweetado:', response.text);
+    
+                }).catch(err=>{
+                    console.log(err);
+                });
+            }
+            else{
+                console.log('\nTweet não contém "Enzo", já foi retweetado, com erro ou é retweet');
+            }
+            
         }).catch(err=>{
             console.log(err);
         });
