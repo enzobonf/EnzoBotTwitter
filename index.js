@@ -50,7 +50,7 @@ function search(q, lang, count){
 
                 if(tweet !== undefined) {
 
-                    console.log('\n tweet:', tweet);
+                    //console.log('\n tweet:', tweet);
                     
                     if(tweet.entities.user_mentions.length > 0){
                         tweet.entities.user_mentions.forEach(user=>{
