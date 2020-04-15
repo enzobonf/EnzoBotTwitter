@@ -1,8 +1,10 @@
-let twit = require('twit');
-let credentials = require('./credentials.json');
+const twit = require('twit');
+const mailer = require('./inc/mailer');
+const credentials = require('./credentials.json');
 
-const retweetInterval = 60 * 1000;
+const retweetInterval = 37 * 1000;
 const favoriteInterval = 60 * 1000;
+const emailsInterval = 1/2; //hora
 
 const bot = new twit(credentials);
 
@@ -13,6 +15,8 @@ const bot = new twit(credentials);
 
 let tweetsRetweetados = [];
 let tweetsFavoritados = [];
+
+let retweetsInTime = 0;
 
 function wordCount(string, word) {
 
@@ -46,46 +50,55 @@ function search(q, lang, count){
                 reject(err);
             }
             else{
-                let id, tweet = data.statuses[0], inResponseTo, text, usersMentioned = [];
+                let id, inResponseTo, text, usersMentioned = [], arrayResponse = [];
+            
+                if(data !== undefined){
 
-                if(tweet !== undefined) {
-
-                    //console.log('\n tweet:', tweet);
-                    
-                    if(tweet.entities.user_mentions.length > 0){
-                        tweet.entities.user_mentions.forEach(user=>{
-                            if(wordCount(user.screen_name.toLowerCase(), 'enzo') >= 1) usersMentioned.push(user.screen_name.toLowerCase());
-                            tweet.text = (tweet.text).replace(`@${user.screen_name}`, '');
-                        });
-                    }
-
-                    id = tweet.id_str;
-
-                    /* inResponseTo = tweet.in_reply_to_screen_name;
-                    (inResponseTo !== null) ? inResponseTo = inResponseTo.toLowerCase() : '';
- */
-                    //(!tweet.truncated) ? text = tweet.text : text = tweet.extended_tweet.full_text;
-
-                    text = tweet.text;
-                    console.log('\nTweet:', text);
-                    text = text.toLowerCase();
-
-                    console.log('Quantas vezes Enzo aparece no tweet:', wordCount(text, 'enzo'));
-
-                    //console.log(tweet.text.toLowerCase());
-                    //console.log(text.indexOf('enzo'));
-
-                    if(tweet && id && (!tweet.retweeted_status || wordCount((tweet.retweeted_status.text).toLowerCase(), 'enzo') >= 1) && tweetsRetweetados.indexOf(id) === -1 && text.indexOf('enzo') !== -1
-                    && (inResponseTo === null || wordCount(text, 'enzo') >= 1)){
-                        resolve(tweet);
-                    }
-                    else{
-                        resolve(false);
-                    }
-
+                    data.statuses.forEach(tweet=>{
+         
+                        if(tweet !== undefined) {
+    
+                            //console.log('\n tweet:', tweet);
+                            
+                            if(tweet.entities.user_mentions.length > 0){
+                                tweet.entities.user_mentions.forEach(user=>{
+                                    if(wordCount(user.screen_name.toLowerCase(), 'enzo') >= 1) usersMentioned.push(user.screen_name.toLowerCase());
+                                    tweet.text = (tweet.text).replace(`@${user.screen_name}`, '');
+                                });
+                            }
+        
+                            id = tweet.id_str;
+        
+                            /* inResponseTo = tweet.in_reply_to_screen_name;
+                            (inResponseTo !== null) ? inResponseTo = inResponseTo.toLowerCase() : '';
+         */
+                            //(!tweet.truncated) ? text = tweet.text : text = tweet.extended_tweet.full_text;
+        
+                            text = tweet.text;
+                            console.log('------------------------------------\nTweet:', text);
+                            text = text.toLowerCase();
+        
+                            console.log('Quantas vezes Enzo aparece no tweet:', wordCount(text, 'enzo'));
+        
+                            //console.log(tweet.text.toLowerCase());
+                            //console.log(text.indexOf('enzo'));
+        
+                            if(tweet && id && !tweet.retweeted_status && tweetsRetweetados.indexOf(id) === -1 && text.indexOf('enzo') !== -1
+                            && (inResponseTo === null || wordCount(text, 'enzo') >= 1)){
+                                arrayResponse.push(tweet);
+                            }
+                            /* else{
+                                resolve(false);
+                            } */
+        
+                        }
+    
+                    });
+    
+                    resolve(arrayResponse);
                 }
                 else{
-                    reject('ERRO');
+                    reject('ERRO na pesquisa')
                 }
 
             }
@@ -139,30 +152,47 @@ function retweet(tweet){
 
 } */
 
-/*search('Veja até o final pra alegrar a sua quarentena!', 'pt', 1).then(tweet=>{
-    if(tweet) retweet(tweet);
-});*/
+/* search('"Enzo"', 'pt', 2).then(tweet=>{
+    //if(tweet) retweet(tweet);
+}); */
 
+setInterval(() => {
+
+    let num = retweetsInTime;
+    retweetsInTime = 0;
+
+    mailer.sendEmail(`${num} retweets em ${emailsInterval} hora`, `${num} tweets foram retweetados pelo bot em ${emailsInterval} hora!`, 'enzobonfx@gmail.com').then(response=>{
+        console.log('Email relatório enviado!');
+    }).catch(err=>{
+        console.log(err);
+    });
+
+}, emailsInterval*3600*1000); //envio de emails informativos
 
 setInterval(() => {
 
     try{
 
-        search('"Enzo"', 'pt', 1).then(tweet=>{
+        search('"Enzo"', 'pt', 4).then(tweets=>{
 
-            if(tweet){
+            if(tweets.length > 0){
 
-                retweet(tweet).then(response=>{
+                tweets.forEach(tweet=>{
+                    retweet(tweet).then(response=>{
 
-                    console.log('Nº de tweets retweetados:', tweetsRetweetados.length);
-                    console.log('Retweetado:', response.text);
-    
-                }).catch(err=>{
-                    console.log('ERRO retweet:', err.message);
+                        console.log('\nNº de tweets retweetados:', tweetsRetweetados.length);
+                        console.log('Retweetado:', response.text);
+
+                        retweetsInTime++;
+        
+                    }).catch(err=>{
+                        console.log('ERRO retweet:', err.message);
+                    });
                 });
+
             }
             else{
-                console.log('\nTweet não contém "Enzo", já foi retweetado, com erro ou é retweet');
+                console.log('\nNão foi encontrado nenhum tweet válido.');
             }
             
         }).catch(err=>{
@@ -174,7 +204,7 @@ setInterval(() => {
         console.log('ERRO no setInterval()', e);
     }
 
-}, 37000);
+}, retweetInterval);
 
 /* setInterval(() => {
     bot.get('search/tweets', { q: 'Enzo', count: 1 }, function(err, data, response) {
