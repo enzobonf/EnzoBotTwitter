@@ -82,7 +82,9 @@ module.exports = (radius, count) => {
 
                         retweetsInTime++;
     
-                    });
+                    }).catch(err=>{
+                        console.log('ERRO retweet:', err.message);
+                    });;
 
                 });
                 
