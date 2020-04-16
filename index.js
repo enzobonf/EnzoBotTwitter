@@ -4,7 +4,7 @@ const credentials = require('./credentials.json');
 
 const retweetInterval = 37 * 1000;
 const favoriteInterval = 60 * 1000;
-const emailsInterval = 1/2; //hora
+const emailsInterval = 1; //hora
 
 const bot = new twit(credentials);
 
