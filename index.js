@@ -2,7 +2,7 @@ const twit = require('twit');
 const mailer = require('./inc/mailer');
 const credentials = require('./credentials.json');
 
-const retweetInterval = 37 * 1000;
+const retweetInterval = 55 * 1000;
 const favoriteInterval = 60 * 1000;
 const emailsInterval = 1; //hora
 
