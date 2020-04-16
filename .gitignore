@@ -103,9 +103,9 @@ dist
 # TernJS port file
 .tern-port
 
-credentials.json
 inc/emailCredentials.json
 nodemon.json
 
 #VSCode
 .vscode/
+credentials.json
