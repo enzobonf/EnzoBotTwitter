@@ -33,7 +33,7 @@ function searchFoz(radius, count){
 
     return new Promise((resolve, reject)=>{
 
-        bot.get('search/tweets', {q: '', lang: 'pt', count, geocode: '-25.539969,-54.581849,20km'}, function(err, data, response) {
+        bot.get('search/tweets', {q: '', lang: 'pt', count, geocode: `-25.539969,-54.581849,${radius}`}, function(err, data, response) {
 
             if(err){
                 reject(err);
@@ -45,8 +45,8 @@ function searchFoz(radius, count){
                 if(data.statuses !== undefined){
 
                     data.statuses.forEach(tweet=>{
-
-                        if(!tweet.retweeted_status && tweet.in_reply_to_status_id === null){
+                        
+                        if(!tweet.retweeted_status && tweet.in_reply_to_status_id === null && tweetsRetweetados.indexOf(tweet.id_str) === -1){
                             arrayResponse.push(tweet);
                         }
     
