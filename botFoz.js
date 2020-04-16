@@ -79,6 +79,8 @@ module.exports = (radius, count) => {
                         console.log('-------------------BOT FOZ-----------------------\nNº de tweets retweetados:', tweetsRetweetados.length);
                         console.log('Retweetado:', response.text);
                         console.log('--------------------------------------------------');
+
+                        retweetsInTime++;
     
                     });
 
