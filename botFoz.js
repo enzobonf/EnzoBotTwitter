@@ -55,6 +55,10 @@ function searchFoz(radius, count){
                     resolve(arrayResponse);
     
                 }
+                else{
+                    reject('Erro nos tweeets pesquisados');
+                }
+                
 
             }
 
