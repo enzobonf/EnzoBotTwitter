@@ -12,9 +12,11 @@ const bot = new twit(credentials.FozBot);
 
 let tweetsRetweetados = [];
 
+this.isRunning = false;
+
 function initCountRetweets(){
 
-    setInterval(() => {
+    this.countRetweetsInterval = setInterval(() => {
 
         let num = retweetsInTime;
         retweetsInTime = 0;
@@ -67,37 +69,71 @@ function searchFoz(radius, count){
     
 }
 
-module.exports = (radius, count) => {
+function searchAndRetweet(radius, count){
+    searchFoz(radius, count).then(tweets=>{
 
-    setInterval(() => {
-        
-        searchFoz(radius, count).then(tweets=>{
+        if(tweets.length > 0){
 
-            if(tweets.length > 0){
+            tweets.forEach(tweet=>{
 
-                tweets.forEach(tweet=>{
+                retweet(bot, tweet).then(response=>{
 
-                    retweet(bot, tweet).then(response=>{
-    
-                        tweetsRetweetados.push(response.id);
-                        console.log('-------------------BOT FOZ-----------------------\nNº de tweets retweetados:', tweetsRetweetados.length);
-                        console.log('Retweetado:', response.text);
-                        console.log('--------------------------------------------------');
+                    tweetsRetweetados.push(response.id);
+                    console.log('-------------------BOT FOZ-----------------------\nNº de tweets retweetados:', tweetsRetweetados.length);
+                    console.log('Retweetado:', response.text);
+                    console.log('--------------------------------------------------');
 
-                        retweetsInTime++;
-    
-                    }).catch(err=>{
-                        console.log('ERRO retweet:', err.message);
-                    });
+                    retweetsInTime++;
 
+                }).catch(err=>{
+                    console.log('ERRO retweet:', err.message);
                 });
-                
-            }
 
-        });
+            });
+            
+        }
 
-    }, retweetInterval);
+    });
+}
 
-    initCountRetweets();
+module.exports = {
+
+    startBot(radius, count){
+
+        if(!this.isRunning){
+
+            console.log('FozBot iniciou');
+
+            this.fozBotInterval = setInterval(() => {
+            
+                searchAndRetweet(radius, count);
+
+            }, retweetInterval);
+
+            initCountRetweets();
+
+            this.isRunning = true;
+
+        }
+        else{
+            console.log('O bot já está em execução!');
+        }
+
+    },
+
+    stopBot(){
+        
+        if(this.isRunning){
+            clearInterval(this.fozBotInterval);
+            clearInterval(this.countRetweetsInterval);
+            this.isRunning = false;
+            retweetsInTime = 0;
+            console.log('FozBot parou');
+        }
+        else{
+            console.log('O bot não está em execução!');
+        }
+
+    }
 
 };

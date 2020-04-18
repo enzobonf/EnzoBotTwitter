@@ -12,6 +12,8 @@ let emailsInterval = 1; //hora
 
 let tweetsRetweetados = [];
 
+this.isRunning = false;
+
 function wordCount(string, word) {
 
     var length = typeof string === "string" && typeof word === "string" && word.length,
@@ -51,8 +53,6 @@ function search(q, lang, count){
                     data.statuses.forEach(tweet=>{
          
                         if(tweet !== undefined) {
-    
-                            //console.log('\n tweet:', tweet);
                             
                             if(tweet.entities.user_mentions.length > 0){
                                 tweet.entities.user_mentions.forEach(user=>{
@@ -102,7 +102,7 @@ function search(q, lang, count){
 
 function initCountRetweets(){
 
-    setInterval(() => {
+    this.countRetweetsInterval = setInterval(() => {
 
         let num = retweetsInTime;
         retweetsInTime = 0;
@@ -117,50 +117,82 @@ function initCountRetweets(){
 
 }
 
-module.exports = (q, lang, count) => {
+function searchAndRetweet(q, lang, count){
 
-    setInterval(() => {
+    try{
 
-        try{
+        search(q, lang, count).then(tweets=>{
 
-            search(q, lang, count).then(tweets=>{
-    
-                if(tweets.length > 0){
-    
-                    tweets.forEach(tweet=>{
-                        
-                        retweet(bot, tweet).then(response=>{
-    
-                            tweetsRetweetados.push(response.id);
-                            console.log('-------------------BOT ENZO-----------------------\nNº de tweets retweetados:', tweetsRetweetados.length);
-                            console.log('Retweetado:', response.text);
-                            console.log('--------------------------------------------------')
-    
-                            retweetsInTime++;
-            
-                        }).catch(err=>{
-                            console.log('ERRO retweet:', err.message);
-                        });
+            if(tweets.length > 0){
 
+                tweets.forEach(tweet=>{
+                    
+                    retweet(bot, tweet).then(response=>{
+
+                        tweetsRetweetados.push(response.id);
+                        console.log('-------------------BOT ENZO-----------------------\nNº de tweets retweetados:', tweetsRetweetados.length);
+                        console.log('Retweetado:', response.text);
+                        console.log('--------------------------------------------------')
+
+                        retweetsInTime++;
+        
+                    }).catch(err=>{
+                        console.log('ERRO retweet:', err.message);
                     });
-    
-                }
-                else{
-                    console.log('\nNão foi encontrado nenhum tweet válido.');
-                }
-                
-            }).catch(err=>{
-                console.log(err);
-            });
-    
-        }
-        catch(e){
-            console.log('ERRO no setInterval()', e);
-        }
-    
-    }, retweetInterval);
 
-    initCountRetweets();
+                });
+
+            }
+            else{
+                console.log('\nNão foi encontrado nenhum tweet válido.');
+            }
+            
+        }).catch(err=>{
+            console.log(err);
+        });
+
+    }
+    catch(e){
+        console.log('ERRO no setInterval()', e);
+    }
+}
+
+module.exports =  {
+
+    startBot(q, lang, count){
+        
+        if(!this.isRunning){
+
+            console.log('EnzoBot iniciou');
+
+            this.enzoBotInterval = setInterval(() => {
+                searchAndRetweet(q, lang, count);
+            }, retweetInterval);
+
+            initCountRetweets();
+
+            this.isRunning = true;
+
+        }
+        else{
+            console.log('O bot já está em execução!');
+        }
+
+    },
+
+    stopBot(){
+        if(this.isRunning){
+            clearInterval(this.enzoBotInterval);
+            clearInterval(this.countRetweetsInterval);
+            this.isRunning = false;
+            retweetsInTime = 0;
+            console.log('EnzoBot parou');
+        }
+        else{
+            console.log('O bot não está em execução!');
+        }
+        
+    }
 
 }
 
