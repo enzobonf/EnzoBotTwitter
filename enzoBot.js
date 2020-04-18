@@ -137,14 +137,21 @@ function searchAndRetweet(q, lang, count){
                         retweetsInTime++;
         
                     }).catch(err=>{
-                        console.log('ERRO retweet:', err.message);
+
+                        let stringError = err.message;
+                        if(err.code === 136){
+                            stringError += ` ---> @${tweet.user.screen_name}`
+                        }
+
+                        console.log('EnzoBot - Erro retweet:', stringError);
+                        
                     });
 
                 });
 
             }
             else{
-                console.log('\nNão foi encontrado nenhum tweet válido.');
+                console.log('\nEnzoBot - Nenhum tweet válido encontrado');
             }
             
         }).catch(err=>{

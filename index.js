@@ -14,7 +14,7 @@ process.stdin.on('readable', ()=>{
     let variable = process.stdin.read(), comm, args;
     if(variable !== null){
         variable = variable.toString().replace(/\n/, ""); 
-        variable = variable.replace(/\r/, ""); 
+        variable = variable.replace(/\r/, "").toLowerCase(); 
 
         comm = variable.split(' ')[0];
         args = variable.split(' ')[1];

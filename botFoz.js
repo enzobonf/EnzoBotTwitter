@@ -86,11 +86,21 @@ function searchAndRetweet(radius, count){
                     retweetsInTime++;
 
                 }).catch(err=>{
-                    console.log('ERRO retweet:', err.message);
+
+                    let stringError = err.message;
+                    if(err.code === 136){
+                        stringError += ` ---> @${tweet.user.screen_name}`
+                    }
+
+                    console.log('FozBot - Erro retweet:', stringError);
+
                 });
 
             });
             
+        }
+        else{
+            console.log('\nFozBot - Nenhum tweet válido encontrado');
         }
 
     });
@@ -122,7 +132,7 @@ module.exports = {
     },
 
     stopBot(){
-        
+
         if(this.isRunning){
             clearInterval(this.fozBotInterval);
             clearInterval(this.countRetweetsInterval);
