@@ -45,8 +45,8 @@ function searchFoz(radius, count){
                 if(data.statuses !== undefined){
 
                     data.statuses.forEach(tweet=>{
-                        
-                        if(!tweet.retweeted_status && tweet.in_reply_to_status_id === null && tweetsRetweetados.indexOf(tweet.id_str) === -1){
+                     
+                        if(tweet !== undefined && !tweet.retweeted_status && tweet.in_reply_to_status_id === null && tweetsRetweetados.indexOf(tweet.id_str) === -1){
                             arrayResponse.push(tweet);
                         }
     
