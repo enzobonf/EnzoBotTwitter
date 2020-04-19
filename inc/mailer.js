@@ -3,7 +3,7 @@ const credentials = require('./emailCredentials.json');
 
 module.exports = {
 
-    sendEmail(subject, text, to, html = ''){
+    sendEmail(subject, text, from, to, html = ''){
 
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -14,7 +14,7 @@ module.exports = {
         });
 
         const mailOptions = {
-            from: 'Enzo Bot <enzobonfx@gmail.com>',
+            from: `${from} <enzobonfx@gmail.com>`,
             to,
             subject,
             text,
