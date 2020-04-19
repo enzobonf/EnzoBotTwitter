@@ -21,7 +21,7 @@ function initCountRetweets(){
         let num = retweetsInTime;
         retweetsInTime = 0;
 
-        mailer.sendEmail(`FozBot - ${num} retweets em ${emailsInterval} hora`, `${num} tweets foram retweetados pelo bot em ${emailsInterval} hora!`, 'enzobonfx@gmail.com').then(response=>{
+        mailer.sendEmail(`FozBot - ${num} retweets em ${emailsInterval} hora`, `${num} tweets foram retweetados pelo bot em ${emailsInterval} hora!`, 'FozBot', 'enzobonfx@gmail.com').then(response=>{
             console.log('Email relatório enviado!');
         }).catch(err=>{
             console.log(err);
@@ -88,8 +88,15 @@ function searchAndRetweet(radius, count){
                 }).catch(err=>{
 
                     let stringError = err.message;
-                    if(err.code === 136){
-                        stringError += ` ---> @${tweet.user.screen_name}`
+                    switch(err.code){
+                        case 88:
+                            mailer.sendEmail('EnzoBot - Limite atingido!', '', 'EnzoBot', 'enzobonfx@gmail.com').then(response=>{
+                                console.log('Email sobre limite atingido foi enviado');
+                            }).catch(err=>{
+                                console.log(err);
+                            });
+                        case 136:
+                            stringError += ` ---> @${tweet.user.screen_name}`;
                     }
 
                     console.log('FozBot - Erro retweet:', stringError);
