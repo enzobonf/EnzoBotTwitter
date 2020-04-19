@@ -35,7 +35,7 @@ function searchFoz(radius, count){
 
     return new Promise((resolve, reject)=>{
 
-        bot.get('search/tweets', {q: '', lang: 'pt', count, geocode: `-25.539969,-54.581849,${radius}`}, function(err, data, response) {
+        bot.get('search/tweets', {q: 'rhaissacomh', lang: 'pt', count, geocode: `-25.539969,-54.581849,${radius}`}, function(err, data, response) {
 
             if(err){
                 reject(err);
@@ -76,7 +76,7 @@ function searchAndRetweet(radius, count){
 
             tweets.forEach(tweet=>{
 
-                retweet(bot, tweet).then(response=>{
+                retweet(bot, tweet, 'FozBot').then(response=>{
 
                     tweetsRetweetados.push(response.id);
                     console.log('-------------------BOT FOZ-----------------------\nNº de tweets retweetados:', tweetsRetweetados.length);
@@ -87,19 +87,7 @@ function searchAndRetweet(radius, count){
 
                 }).catch(err=>{
 
-                    let stringError = err.message;
-                    switch(err.code){
-                        case 88:
-                            mailer.sendEmail('EnzoBot - Limite atingido!', '', 'EnzoBot', 'enzobonfx@gmail.com').then(response=>{
-                                console.log('Email sobre limite atingido foi enviado');
-                            }).catch(err=>{
-                                console.log(err);
-                            });
-                        case 136:
-                            stringError += ` ---> @${tweet.user.screen_name}`;
-                    }
-
-                    console.log('FozBot - Erro retweet:', stringError);
+                    console.log(err);
 
                 });
 

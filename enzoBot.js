@@ -127,7 +127,7 @@ function searchAndRetweet(q, lang, count){
 
                 tweets.forEach(tweet=>{
                     
-                    retweet(bot, tweet).then(response=>{
+                    retweet(bot, tweet, 'EnzoBot').then(response=>{
 
                         tweetsRetweetados.push(response.id);
                         console.log('-------------------BOT ENZO-----------------------\nNº de tweets retweetados:', tweetsRetweetados.length);
@@ -138,7 +138,7 @@ function searchAndRetweet(q, lang, count){
         
                     }).catch(err=>{
 
-                        let stringError = err.message;
+                        /* let stringError = err.message;
                         switch(err.code){
                             case 88:
                                 mailer.sendEmail('EnzoBot - Limite atingido!', '', 'EnzoBot', 'enzobonfx@gmail.com').then(response=>{
@@ -148,9 +148,9 @@ function searchAndRetweet(q, lang, count){
                                 });
                             case 136:
                                 stringError += ` ---> @${tweet.user.screen_name}`;
-                        }
+                        } */
 
-                        console.log('EnzoBot - Erro retweet:', stringError);
+                        console.log(err);
                         
                     });
 
