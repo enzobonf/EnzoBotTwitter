@@ -35,7 +35,7 @@ function searchFoz(radius, count){
 
     return new Promise((resolve, reject)=>{
 
-        bot.get('search/tweets', {q: 'rhaissacomh', lang: 'pt', count, geocode: `-25.539969,-54.581849,${radius}`}, function(err, data, response) {
+        bot.get('search/tweets', {q: '', lang: 'pt', count, geocode: `-25.539969,-54.581849,${radius}`}, function(err, data, response) {
 
             if(err){
                 reject(err);

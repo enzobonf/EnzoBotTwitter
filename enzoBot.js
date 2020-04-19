@@ -3,7 +3,7 @@ const credentials = require('./credentials.json');
 const mailer = require('./inc/mailer');
 const retweet = require('./inc/retweet');
 
-const retweetInterval = 50 * 1000;
+const retweetInterval = 45 * 1000;
 
 const bot = new twit(credentials.EnzoBot);
 
