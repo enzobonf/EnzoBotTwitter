@@ -101,6 +101,8 @@ function searchAndRetweet(radius, count){
                         console.log(`FozBot - Autor (@${tweet.user.screen_name}) bloqueou o bot, tweet descartado`)
                     }
                 
+                }).catch(err=>{
+                    console.log(err);
                 });
 
 

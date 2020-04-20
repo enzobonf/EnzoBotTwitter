@@ -151,7 +151,9 @@ function searchAndRetweet(q, lang, count){
                             console.log(`EnzoBot - Autor (@${tweet.user.screen_name}) bloqueou o bot, tweet descartado`)
                         }
 
-                    });           
+                    }).catch(err=>{
+                        console.log(err);
+                    });;           
 
                 });
 
