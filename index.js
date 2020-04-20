@@ -74,15 +74,16 @@ botConfigs.find({botName: 'enzoBot'}).update({}, {$push: {"blockedUsers":'{"id":
 
 botConfigs.find({}).lean().exec().then(response=>{
     
-    console.log(response.length);
+    console.log(response);
     if(response.length === 0){
 
         botConfigs.insertMany([{
-            botName: "EnzoBot",
+        botName: "EnzoBot",
         running: false,
         blockedUsers: [],
         totalRetweets: 0,
-        retweetsPerTime: 0 }, {botName: "FozBot",
+        retweetsPerTime: 0 }, 
+        {botName: "FozBot",
         running: false,
         blockedUsers: [],
         totalRetweets: 0,

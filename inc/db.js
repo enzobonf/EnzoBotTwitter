@@ -8,10 +8,11 @@ db.once('open', function() {
 });
 
 let userSchema = new mongoose.Schema({
+    botName: String,
     running: Boolean,
     blockedUsers: Array,
     totalRetweets: Number,
-    retweetsPerTime: Number
+    retweetsPerTime: Number,
 });
 
 let configs = mongoose.model('configs', userSchema, 'configs');
