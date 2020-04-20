@@ -1,6 +1,6 @@
 
 const initEnzoBot = require('./enzoBot');
-//initEnzoBot.startBot('"Enzo"', 'pt', 4);
+initEnzoBot.startBot('"Enzo"', 'pt', 4);
 
 const initBotFoz = require('./botFoz');
 initBotFoz.startBot('20km', 4);
