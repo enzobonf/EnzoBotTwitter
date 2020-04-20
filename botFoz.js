@@ -1,7 +1,7 @@
 const twit = require('twit');
 const credentials = require('./credentials.json');
 const mailer = require('./inc/mailer');
-const retweet = require('./inc/retweet');
+const twitter = require('./inc/twitter');
 
 const retweetInterval = 60 * 1000;
 
@@ -47,7 +47,7 @@ function searchFoz(radius, count){
                 if(data.statuses !== undefined){
 
                     data.statuses.forEach(tweet=>{
-                     
+
                         if(tweet !== undefined && !tweet.retweeted_status && tweet.in_reply_to_status_id === null && tweetsRetweetados.indexOf(tweet.id_str) === -1){
                             arrayResponse.push(tweet);
                         }
@@ -76,20 +76,33 @@ function searchAndRetweet(radius, count){
 
             tweets.forEach(tweet=>{
 
-                retweet(bot, tweet, 'FozBot').then(response=>{
+                //verificar se usuário bloqueou o bot
+                twitter.verifyIfUserBlocked('FozBot', tweet.user.id_str).then(blocked=>{
 
-                    tweetsRetweetados.push(response.id);
-                    console.log('-------------------BOT FOZ-----------------------\nNº de tweets retweetados:', tweetsRetweetados.length);
-                    console.log('Retweetado:', response.text);
-                    console.log('--------------------------------------------------');
+                    if(!blocked){
 
-                    retweetsInTime++;
+                        twitter.retweet(bot, tweet, 'FozBot').then(response=>{
 
-                }).catch(err=>{
+                            tweetsRetweetados.push(response.id);
+                            console.log('-------------------BOT FOZ-----------------------\nNº de tweets retweetados:', tweetsRetweetados.length);
+                            console.log('Retweetado:', response.text);
+                            console.log('--------------------------------------------------');
+        
+                            retweetsInTime++;
+        
+                        }).catch(err=>{
+        
+                            console.log(err);
+        
+                        });
 
-                    console.log(err);
-
+                    }
+                    else{
+                        console.log(`FozBot - Autor (@${tweet.user.screen_name}) bloqueou o bot, tweet descartado`)
+                    }
+                
                 });
+
 
             });
             

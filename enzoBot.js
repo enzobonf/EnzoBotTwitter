@@ -1,7 +1,7 @@
 const twit = require('twit');
 const credentials = require('./credentials.json');
 const mailer = require('./inc/mailer');
-const retweet = require('./inc/retweet');
+const twitter = require('./inc/twitter');
 
 const retweetInterval = 60 * 1000;
 
@@ -126,33 +126,32 @@ function searchAndRetweet(q, lang, count){
             if(tweets.length > 0){
 
                 tweets.forEach(tweet=>{
-                    
-                    retweet(bot, tweet, 'EnzoBot').then(response=>{
 
-                        tweetsRetweetados.push(response.id);
-                        console.log('-------------------BOT ENZO-----------------------\nNº de tweets retweetados:', tweetsRetweetados.length);
-                        console.log('Retweetado:', response.text);
-                        console.log('--------------------------------------------------')
+                    twitter.verifyIfUserBlocked('EnzoBot', tweet.user.id_str).then(blocked=>{
 
-                        retweetsInTime++;
+                        if(!blocked){
+                            
+                            twitter.retweet(bot, tweet, 'EnzoBot').then(response=>{
+
+                                tweetsRetweetados.push(response.id);
+                                console.log('-------------------BOT ENZO-----------------------\nNº de tweets retweetados:', tweetsRetweetados.length);
+                                console.log('Retweetado:', response.text);
+                                console.log('--------------------------------------------------')
         
-                    }).catch(err=>{
+                                retweetsInTime++;
+                
+                            }).catch(err=>{
+        
+                                console.log(err);
+                                
+                            });
 
-                        /* let stringError = err.message;
-                        switch(err.code){
-                            case 88:
-                                mailer.sendEmail('EnzoBot - Limite atingido!', '', 'EnzoBot', 'enzobonfx@gmail.com').then(response=>{
-                                    console.log('Email sobre limite atingido foi enviado');
-                                }).catch(err=>{
-                                    console.log(err);
-                                });
-                            case 136:
-                                stringError += ` ---> @${tweet.user.screen_name}`;
-                        } */
+                        }
+                        else{
+                            console.log(`EnzoBot - Autor (@${tweet.user.screen_name}) bloqueou o bot, tweet descartado`)
+                        }
 
-                        console.log(err);
-                        
-                    });
+                    });           
 
                 });
 
