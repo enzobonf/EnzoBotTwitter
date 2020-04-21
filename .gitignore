@@ -111,3 +111,4 @@ nodemon.json
 .vscode/
 
 db.json
+inc/dbCredentials.json
