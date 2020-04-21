@@ -1,4 +1,3 @@
-const mailer = require('./mailer');
 const db = require('./db');
 const utils = require('./utils');
 

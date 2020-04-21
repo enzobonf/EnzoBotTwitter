@@ -1,6 +1,5 @@
 const twit = require('twit');
 const credentials = require('./inc/twitterCredentials.json');
-const mailer = require('./inc/mailer');
 const twitter = require('./inc/twitter');
 
 const retweetInterval = 60 * 1000;
