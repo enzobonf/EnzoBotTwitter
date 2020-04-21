@@ -104,9 +104,10 @@ dist
 .tern-port
 
 inc/emailCredentials.json
-db/enzoBot.db
+inc/twitterCredentials.json
 nodemon.json
 
 #VSCode
 .vscode/
-credentials.json
+
+db.json

@@ -1,5 +1,5 @@
 const twit = require('twit');
-const credentials = require('./credentials.json');
+const credentials = require('./inc/twitterCredentials.json');
 const mailer = require('./inc/mailer');
 const twitter = require('./inc/twitter');
 
@@ -8,7 +8,7 @@ const retweetInterval = 60 * 1000;
 const bot = new twit(credentials.EnzoBot);
 
 let retweetsInTime = 0;
-let emailsInterval = 1; //hora
+let messagesInterval = 1; //hora
 
 let tweetsRetweetados = [];
 
@@ -107,13 +107,13 @@ function initCountRetweets(){
         let num = retweetsInTime;
         retweetsInTime = 0;
 
-        mailer.sendEmail(`EnzoBot - ${num} retweets em ${emailsInterval} hora`, `${num} tweets foram retweetados pelo bot em ${emailsInterval} hora!`, 'EnzoBot',  'enzobonfx@gmail.com').then(response=>{
-            console.log('Email relatório enviado!');
+        twitter.reportViaDm(bot, num, messagesInterval).then(response=>{
+            console.log('Mensagem relatório enviada com sucesso!');
         }).catch(err=>{
             console.log(err);
         });
 
-    }, emailsInterval*3600*1000); //envio de emails informativos
+    }, messagesInterval*3600*1000); //envio de mensagens (via DM) informativas
 
 }
 
@@ -171,7 +171,6 @@ function searchAndRetweet(q, lang, count){
         console.log('ERRO no setInterval()', e);
     }
 }
-
 module.exports =  {
 
     startBot(q, lang, count){
@@ -183,6 +182,12 @@ module.exports =  {
             this.enzoBotInterval = setInterval(() => {
                 searchAndRetweet(q, lang, count);
             }, retweetInterval);
+
+            twitter.reportViaDm(bot, '2', '1').then(response=>{
+                console.log('Mensagem relatório enviada com sucesso!');
+            }).catch(err=>{
+                console.log(err);
+            });
 
             initCountRetweets();
 

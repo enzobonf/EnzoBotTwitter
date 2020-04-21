@@ -1,5 +1,7 @@
 const mailer = require('./mailer');
 const db = require('./db');
+const utils = require('./utils');
+
 let botConfigs = db.configs;
 
 function saveBlockedUsers(botName, id, username){
@@ -8,6 +10,38 @@ function saveBlockedUsers(botName, id, username){
         console.log(`Usuário que bloqueou o bot (@${username}) foi adicionado ao banco de dados`);
     }).catch(err=>{
         console.log(err);
+    });
+
+}
+
+function sendDM(bot, text){
+
+    return new Promise((resolve, reject)=>{
+
+        text = text + ' | ' + utils.getDateAndHour();
+
+        bot.post('direct_messages/events/new', {
+            event: {
+                type: "message_create",
+                message_create: {
+                    target: {
+                        recipient_id: '1135041189403607040' //@enzobonf
+                    },
+                    message_data: {
+                        text
+                    }
+                }
+            }}, (err, response)=>{
+
+            if(!err){
+                resolve(response);
+            }
+            else{
+                reject(err);
+            }
+
+        });
+
     });
 
 }
@@ -30,11 +64,11 @@ module.exports = {
                     switch(err.code){
                         case 88:
 
-                            mailer.sendEmail(`${botName} - Limite atingido!`, '', `${botName}`, 'enzobonfx@gmail.com').then(response=>{
-                                console.log(`Email sobre limite atingido no ${botName} foi enviado`);
+                            sendDM(bot, 'Limite atingido!').then(response=>{
+                                console.log('Mensagem sobre o limite ter sido atingido enviada com sucesso!');
                             }).catch(err=>{
                                 console.log(err);
-                            });
+                            });;
                             
                         case 136:
                             saveBlockedUsers(botName, tweet.user.id_str, tweet.user.screen_name);
@@ -64,6 +98,22 @@ module.exports = {
             }).catch(err=>{
                 reject('Erro ao verificar se o autor do tweet bloqueou o bot');
             });
+
+        });
+
+    },
+
+    reportViaDm(bot, numRetweets, interval){
+
+        return new Promise((resolve, reject)=>{
+
+            let text = `${numRetweets} retweets em ${interval} hora`
+
+            sendDM(bot, text).then(response=>{
+                resolve(response);
+            }).catch(err=>{
+                reject(err);
+            })
 
         });
 

@@ -1,12 +1,12 @@
 const twit = require('twit');
-const credentials = require('./credentials.json');
+const credentials = require('./inc/twitterCredentials.json');
 const mailer = require('./inc/mailer');
 const twitter = require('./inc/twitter');
 
 const retweetInterval = 60 * 1000;
 
 let retweetsInTime = 0;
-let emailsInterval = 1; //hora
+let messagesInterval = 1; //hora
 
 const bot = new twit(credentials.FozBot);
 
@@ -21,13 +21,13 @@ function initCountRetweets(){
         let num = retweetsInTime;
         retweetsInTime = 0;
 
-        mailer.sendEmail(`FozBot - ${num} retweets em ${emailsInterval} hora`, `${num} tweets foram retweetados pelo bot em ${emailsInterval} hora!`, 'FozBot', 'enzobonfx@gmail.com').then(response=>{
-            console.log('Email relatório enviado!');
+        twitter.reportViaDm(bot, num, messagesInterval).then(response=>{
+            console.log('Mensagem relatório enviada com sucesso!');
         }).catch(err=>{
             console.log(err);
         });
 
-    }, emailsInterval*3600*1000); //envio de emails informativos
+    }, messagesInterval*3600*1000); //envio de mensagens (via DM) informativas
 
 }
 

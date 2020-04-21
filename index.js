@@ -22,11 +22,11 @@ process.stdin.on('readable', ()=>{
             case 'start':
                 switch(args){
                     case 'enzobot':
-                        initEnzoBot.startBot();
+                        initEnzoBot.startBot('"Enzo"', 'pt', 4);
                     break;
 
                     case 'fozbot':
-                        initBotFoz.startBot();
+                        initBotFoz.startBot('20km', 4);
                     break;
                 }
             break;
@@ -50,31 +50,8 @@ process.stdin.on('readable', ()=>{
 
 let botConfigs = db.configs;
 
-let botName = 'EnzoBot'
-let id = '123456';
-let username = 'teste2';
-
-let json = `{"id": "${id}", "username": "${username}"}`;
-
-/* botConfigs.updateOne({botName}, {$push: {"blockedUsers":`{"id":"${id}", "username":"${username}"}`}}).then(response=>{
-    console.log(response.nModified);
-}); 
-
-botConfigs.find({botName: 'enzoBot'}).update({}, {$push: {"blockedUsers":'{"id": "838214362", "username": "@teste2"}'}}).then(response=>{
-    console.log(response.nModified);
-}); */
-
-/* botConfigs.create({
-        botName: "EnzoBot",
-    running: false,
-    blockedUsers: [],
-    totalRetweets: 0,
-    retweetsPerTime: 0 });
- */
-
 botConfigs.find({}).lean().exec().then(response=>{
-    
-    console.log(response);
+
     if(response.length === 0){
 
         botConfigs.insertMany([{
