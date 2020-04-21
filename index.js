@@ -1,6 +1,6 @@
 
 const initEnzoBot = require('./enzoBot');
-initEnzoBot.startBot('"Enzo"', 'pt', 4);
+initEnzoBot.startBot('"Enzo"', 'pt', 5);
 
 const initBotFoz = require('./botFoz');
 initBotFoz.startBot('20km', 4);
@@ -22,7 +22,7 @@ process.stdin.on('readable', ()=>{
             case 'start':
                 switch(args){
                     case 'enzobot':
-                        initEnzoBot.startBot('"Enzo"', 'pt', 4);
+                        initEnzoBot.startBot('"Enzo"', 'pt', 5);
                     break;
 
                     case 'fozbot':
