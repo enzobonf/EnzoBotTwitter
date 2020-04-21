@@ -182,12 +182,6 @@ module.exports =  {
                 searchAndRetweet(q, lang, count);
             }, retweetInterval);
 
-            twitter.reportViaDm(bot, '2', '1').then(response=>{
-                console.log('Mensagem relatório enviada com sucesso!');
-            }).catch(err=>{
-                console.log(err);
-            });
-
             initCountRetweets();
 
             this.isRunning = true;
