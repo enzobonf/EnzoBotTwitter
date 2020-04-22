@@ -2,8 +2,8 @@
 const initEnzoBot = require('./enzoBot');
 initEnzoBot.startBot('"Enzo"', 'pt', 5);
 
-const initBotFoz = require('./botFoz');
-initBotFoz.startBot('20km', 4);
+//const initBotFoz = require('./botFoz');
+//initBotFoz.startBot('20km', 4);
 
 const db = require('./inc/db');
 
@@ -25,9 +25,9 @@ process.stdin.on('readable', ()=>{
                         initEnzoBot.startBot('"Enzo"', 'pt', 5);
                     break;
 
-                    case 'fozbot':
+                    /* case 'fozbot':
                         initBotFoz.startBot('20km', 4);
-                    break;
+                    break; */
                 }
             break;
 
@@ -37,11 +37,12 @@ process.stdin.on('readable', ()=>{
                         initEnzoBot.stopBot();
                     break;
 
-                    case 'fozbot':
+                    /* case 'fozbot':
                         initBotFoz.stopBot();
-                    break;
+                    break; */
                 }
             break;
+
         }
         
     }
@@ -76,12 +77,5 @@ botConfigs.find({}).lean().exec().then(response=>{
     }
 
 });
-
-
-
-
-/* botConfigs.watch({running}).on('change', (change)=>{
-    console.log(change);
-});  */
 
   
