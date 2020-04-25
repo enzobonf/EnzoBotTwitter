@@ -5,8 +5,8 @@ enzoBot.startBot('"Enzo"', 'pt', 5);
 //const initBotFoz = require('./botFoz');
 //initBotFoz.startBot('20km', 4);
 
-const SPBot = require('./spBot');
-SPBot.startBot('14mi', 6);
+/* const SPBot = require('./spBot');
+SPBot.startBot('14mi', 6); */
 
 const db = require('./inc/db');
 
