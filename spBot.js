@@ -2,12 +2,12 @@ const twit = require('twit');
 const credentials = require('./inc/twitterCredentials.json');
 const twitter = require('./inc/twitter');
 
-const retweetInterval = 30 * 1000;
+const retweetInterval =  60 * 1000;
 
 let retweetsInTime = 0;
 let messagesInterval = 1; //hora
 
-const bot = new twit(credentials.FozBot);
+const bot = new twit(credentials.SPBot);
 
 let tweetsRetweetados = [];
 
@@ -30,11 +30,11 @@ function initCountRetweets(){
 
 }
 
-function searchFoz(radius, count){
+function searchSP(radius, count){
 
     return new Promise((resolve, reject)=>{
 
-        bot.get('search/tweets', {q: '', lang: 'pt', count, geocode: `-25.539969,-54.581849,${radius}`}, function(err, data, response) {
+        bot.get('search/tweets', {q: '', lang: 'pt', count, geocode: `-23.569097,-46.593397,${radius}`, result_type: 'recent'}, function(err, data, response) {
 
             if(err){
                 reject(err);
@@ -47,7 +47,7 @@ function searchFoz(radius, count){
 
                     data.statuses.forEach(tweet=>{
 
-                        if(tweet !== undefined && !tweet.retweeted_status && tweet.in_reply_to_status_id === null && tweetsRetweetados.indexOf(tweet.id_str) === -1){
+                        if(tweet !== undefined && (!tweet.retweeted_status || tweet.retweeted_status.is_quote_status) && tweet.in_reply_to_status_id === null && tweetsRetweetados.indexOf(tweet.id_str) === -1){
                             arrayResponse.push(tweet);
                         }
     
@@ -69,21 +69,21 @@ function searchFoz(radius, count){
 }
 
 function searchAndRetweet(radius, count){
-    searchFoz(radius, count).then(tweets=>{
+    searchSP(radius, count).then(tweets=>{
 
         if(tweets.length > 0){
 
-            tweets.forEach(tweet=>{
+            tweets.forEach(tweet=>{             
 
                 //verificar se usuário bloqueou o bot
-                twitter.verifyIfUserBlocked('FozBot', tweet.user.id_str).then(blocked=>{
+                twitter.verifyIfUserBlocked('SPBot', tweet.user.id_str).then(blocked=>{
 
                     if(!blocked){
 
-                        twitter.retweet(bot, tweet, 'FozBot').then(response=>{
+                        twitter.retweet(bot, tweet, 'SPBot').then(response=>{
 
                             tweetsRetweetados.push(response.id);
-                            console.log('-------------------BOT FOZ-----------------------\nNº de tweets retweetados:', tweetsRetweetados.length);
+                            console.log('-------------------BOT SP-----------------------\nNº de tweets retweetados:', tweetsRetweetados.length);
                             console.log('Retweetado:', response.text);
                             console.log('--------------------------------------------------');
         
@@ -97,7 +97,7 @@ function searchAndRetweet(radius, count){
 
                     }
                     else{
-                        console.log(`FozBot - Autor (@${tweet.user.screen_name}) bloqueou o bot, tweet descartado`)
+                        console.log(`SPBot - Autor (@${tweet.user.screen_name}) bloqueou o bot, tweet descartado`)
                     }
                 
                 }).catch(err=>{
@@ -106,10 +106,11 @@ function searchAndRetweet(radius, count){
 
 
             });
+
             
         }
         else{
-            console.log('\nFozBot - Nenhum tweet válido encontrado');
+            console.log('\nSPBot - Nenhum tweet válido encontrado');
         }
 
     });
@@ -121,9 +122,9 @@ module.exports = {
 
         if(!this.isRunning){
 
-            console.log('FozBot iniciou');
+            console.log('SPBot iniciou');
 
-            this.fozBotInterval = setInterval(() => {
+            this.SPBotInterval = setInterval(() => {
             
                 searchAndRetweet(radius, count);
 
@@ -143,11 +144,11 @@ module.exports = {
     stopBot(){
 
         if(this.isRunning){
-            clearInterval(this.fozBotInterval);
+            clearInterval(this.SPBotInterval);
             clearInterval(this.countRetweetsInterval);
             this.isRunning = false;
             retweetsInTime = 0;
-            console.log('FozBot parou');
+            console.log('SPBot parou');
         }
         else{
             console.log('O bot não está em execução!');

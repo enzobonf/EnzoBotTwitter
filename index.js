@@ -1,14 +1,17 @@
 
-const initEnzoBot = require('./enzoBot');
-initEnzoBot.startBot('"Enzo"', 'pt', 5);
+const enzoBot = require('./enzoBot');
+enzoBot.startBot('"Enzo"', 'pt', 5);
 
 //const initBotFoz = require('./botFoz');
 //initBotFoz.startBot('20km', 4);
 
+const SPBot = require('./spBot');
+SPBot.startBot('14mi', 6);
+
 const db = require('./inc/db');
 
 // Leitura do console para stop/start dos bots:
-process.stdin.on('readable', ()=>{ 
+/* process.stdin.on('readable', ()=>{ 
 
     let variable = process.stdin.read(), comm, args;
     if(variable !== null){
@@ -25,9 +28,9 @@ process.stdin.on('readable', ()=>{
                         initEnzoBot.startBot('"Enzo"', 'pt', 5);
                     break;
 
-                    /* case 'fozbot':
+                    case 'fozbot':
                         initBotFoz.startBot('20km', 4);
-                    break; */
+                    break;
                 }
             break;
 
@@ -37,9 +40,9 @@ process.stdin.on('readable', ()=>{
                         initEnzoBot.stopBot();
                     break;
 
-                    /* case 'fozbot':
+                    case 'fozbot':
                         initBotFoz.stopBot();
-                    break; */
+                    break;
                 }
             break;
 
@@ -47,7 +50,7 @@ process.stdin.on('readable', ()=>{
         
     }
     
-});
+}); */
 
 let botConfigs = db.configs;
 
