@@ -82,6 +82,23 @@ module.exports = {
         });
     },
 
+    tweet(text, bot){
+
+        return new Promise((resolve, reject)=>{
+
+            bot.post('statuses/update', { status: text }, function(err, data, response) {
+                if(!err){
+                    resolve(response);
+                }
+                else{
+                    reject(err);
+                }
+            });
+
+        });
+
+    },
+
     verifyIfUserBlocked(botName, id){
 
         return new Promise((resolve, reject)=>{
@@ -102,11 +119,9 @@ module.exports = {
 
     },
 
-    reportViaDm(bot, numRetweets, interval){
+    reportViaDm(bot, numRetweets, interval, text = `${numRetweets} retweets em ${interval} hora`){
 
         return new Promise((resolve, reject)=>{
-
-            let text = `${numRetweets} retweets em ${interval} hora`
 
             sendDM(bot, text).then(response=>{
                 resolve(response);

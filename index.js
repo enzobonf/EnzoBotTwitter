@@ -5,8 +5,8 @@ enzoBot.startBot('"Enzo"', 'pt', 5);
 //const initBotFoz = require('./botFoz');
 //initBotFoz.startBot('20km', 4);
 
-/* const SPBot = require('./spBot');
-SPBot.startBot('14mi', 6); */
+const vtncBot = require('./vtncBot');
+vtncBot.startBot('a', 1);
 
 const db = require('./inc/db');
 
@@ -80,5 +80,26 @@ botConfigs.find({}).lean().exec().then(response=>{
     }
 
 });
+
+/* botConfigs.find({botName:'EnzoBot'}).lean().exec().then(response=>{
+
+    let usersBlocked = response[0].blockedUsers.map(json=>{
+        return JSON.parse(json).username;
+    });
+
+    let count = 0;
+
+    for(i in usersBlocked){
+
+        if(usersBlocked[i] === 'soberbacho') count++;
+
+    }
+
+    console.log(count); 
+
+
+}).catch(err=>{
+    console.log('Erro ao verificar se o autor do tweet bloqueou o bot', err);
+}); */
 
   
