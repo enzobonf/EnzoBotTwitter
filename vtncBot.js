@@ -84,11 +84,11 @@ module.exports = {
                     
                         let text = `vai tomar no cu @${user}!`
                         twitter.tweet(text, bot).then(response=>{
-                            console.log(`Usuário @${user} foi tomar no cu com sucesso!`);
+                            console.log(`Vtnc Bot - Usuário @${user} foi tomar no cu com sucesso!`);
                             usersXingados.push(user);
                         }).catch(err=>{
                             twitter.reportViaDm(bot, '', '', `Erro: ${err.message}`);
-                            console.log(err);
+                            console.log('Vtnc Bot -', err.message);
                         });
 
                     });
