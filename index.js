@@ -5,8 +5,8 @@ enzoBot.startBot('"Enzo"', 'pt', 5);
 //const initBotFoz = require('./botFoz');
 //initBotFoz.startBot('20km', 4);
 
-const vtncBot = require('./vtncBot');
-vtncBot.startBot('a', 1);
+/* const vtncBot = require('./vtncBot');
+vtncBot.startBot('a', 1); */
 
 const db = require('./inc/db');
 
