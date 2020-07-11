@@ -1,10 +1,15 @@
 const twit = require('twit');
-const credentials = require('./inc/twitterCredentials.json');
+//const credentials = require('./inc/twitterCredentials.json');
 const twitter = require('./inc/twitter');
 
 const retweetInterval = 60 * 1000;
 
-const bot = new twit(credentials.EnzoBot);
+const bot = new twit({
+    consumer_key: process.env.ENZO_CONSUMER_KEY,
+    consumer_secret: process.env.ENZO_CONSUMER_SECRET_KEY,
+    access_token: process.env.ENZO_ACCESS_TOKEN,
+    access_token_secret: process.env.ENZO_ACCESS_SECRET_TOKEN
+});
 
 let retweetsInTime = 0;
 let messagesInterval = 1; //hora
