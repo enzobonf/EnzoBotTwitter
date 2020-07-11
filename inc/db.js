@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 require('dotenv').config();
 
-mongoose.connect(process.env.DB_URI || 'mongodb://localhost:27017/botsConfig', {user: process.env.DB_USER, pass: process.env.DB_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(process.env.DB_URI, {user: process.env.DB_USER, pass: process.env.DB_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
 
 let db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'));
