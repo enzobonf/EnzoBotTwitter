@@ -30,6 +30,8 @@ function startPixelizer(){
 
             getImgUris(replyToId).then(uri=>{
 
+                console.log(uri);
+
                 if(uri === '') return false;
                 
                 pixelize(uri).then(pixelizedImg=>{
