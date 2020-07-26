@@ -62,54 +62,6 @@ function startPixelizer(){
     });
 }
 
-/* twitter.tweet(bot, '@enzobonf', params = {in_reply_to_status_id: '1287196538264080384'}).then(response=>{
-
-    console.log('resposta enviada!');
-
-}); */
-
-/* bot.get('statuses/show', { id: '1285674693450752003'}, function(err, data, response) {
-
-    let imgURI = data.entities.media[0].media_url;
-    pixelize(imgURI).then(pixelatedImg=>{
-
-        let b64 = pixelatedImg.toString('base64');
-        twitter.uploadMedia(bot, b64).then(mediaId=>{
-            console.log(mediaId);
-        });
-
-    });
-
-});  */
-
-/* getImgUris().then(uri=>{
-
-    console.log(uri);
-
-    if(uri === '') return false;
-        
-    pixelize(uri).then(pixelizedImg=>{
-
-        let b64 = pixelizedImg.toString('base64');
-
-        twitter.uploadMedia(bot, b64).then(mediaIds=>{
-
-            console.log(mediaIds);
-            twitter.tweet(bot, `@enzobonf`, params = {
-                in_reply_to_status_id: '1287196538264080400',
-                media_ids: mediaIds
-            }).then(response=>{
-
-                console.log('resposta enviada!');
-            
-            });
-
-        });
-
-    });
-
-}); */
-
 function getImgUris(tweetId = '1285674693450752003'){
 
     return new Promise((resolve, reject)=>{
@@ -150,7 +102,7 @@ function pixelize(imgUrl){
     return new Promise((resolve, reject)=>{
 
         jimp.read(imgUrl).then(img=>{
-            return resolve(img.pixelate(25).getBufferAsync(jimp.AUTO));
+            return resolve(img.pixelate(20).getBufferAsync(jimp.AUTO));
         }).catch(err=>{
             reject(err);
         });
@@ -158,6 +110,35 @@ function pixelize(imgUrl){
     });
 
 }
+
+//codigo para teste:
+/* getImgUris().then(uri=>{
+
+    console.log(uri);
+
+    if(uri === '') return false;
+        
+    pixelize(uri).then(pixelizedImg=>{
+
+        let b64 = pixelizedImg.toString('base64');
+
+        twitter.uploadMedia(bot, b64).then(mediaIds=>{
+
+            console.log(mediaIds);
+            twitter.tweet(bot, `@enzobonf`, params = {
+                in_reply_to_status_id: '1287196538264080400',
+                media_ids: mediaIds
+            }).then(response=>{
+
+                console.log('resposta enviada!');
+            
+            });
+
+        });
+
+    });
+
+}); */
 
 module.exports = {
     start: startPixelizer
