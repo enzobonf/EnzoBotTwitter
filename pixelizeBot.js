@@ -118,6 +118,8 @@ function getImgUris(tweetId = '1285674693450752003'){
 
             if(!err){
 
+                console.log(data.entities.media);
+
                 if(!data.entities.media) return resolve('');
 
                 let medias = data.entities.media;
