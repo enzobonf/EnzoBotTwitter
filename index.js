@@ -2,6 +2,9 @@
 const enzoBot = require('./enzoBot');
 enzoBot.startBot('"Enzo"', 'pt', 5);
 
+const pixelizeBot = require('./pixelizeBot');
+pixelizeBot.start();
+
 //const initBotFoz = require('./botFoz');
 //initBotFoz.startBot('20km', 4);
 
@@ -52,6 +55,7 @@ const db = require('./inc/db');
     
 }); */
 
+//descomentar a partir daqui
 let botConfigs = db.configs;
 
 botConfigs.find({}).lean().exec().then(response=>{
@@ -80,6 +84,8 @@ botConfigs.find({}).lean().exec().then(response=>{
     }
 
 });
+
+//descomentar até aqui
 
 /* botConfigs.find({botName:'EnzoBot'}).lean().exec().then(response=>{
 

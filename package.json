@@ -5,13 +5,14 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nodemon pixelizeBot.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^8.2.0",
+    "jimp": "^0.14.0",
     "mongodb": "^3.5.6",
     "mongoose": "^5.9.9",
     "twit": "^2.2.11"

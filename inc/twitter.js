@@ -82,12 +82,13 @@ module.exports = {
         });
     },
 
-    tweet(text, bot){
+    tweet(bot, text,  params = {}){
 
         return new Promise((resolve, reject)=>{
 
-            bot.post('statuses/update', { status: text }, function(err, data, response) {
-                if(!err){
+
+            bot.post('statuses/update', Object.assign(params, {status: text}), function(err, data, response) {
+                if(!err){0
                     resolve(response);
                 }
                 else{
@@ -127,7 +128,24 @@ module.exports = {
                 resolve(response);
             }).catch(err=>{
                 reject(err);
-            })
+            });
+
+        });
+
+    },
+    
+    uploadMedia(bot, b64){
+
+        return new Promise((resolve, reject)=>{
+
+            bot.post('media/upload', { media_data: b64 }, function (err, data, response) {
+
+                if(err) return reject(err);
+
+                let mediaIdStr = data.media_id_string;
+                resolve(mediaIdStr);
+
+            });
 
         });
 
