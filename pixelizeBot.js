@@ -12,7 +12,9 @@ const bot = new twit({
     access_token_secret: process.env.PIXELIZE_ACCESS_SECRET_TOKEN
 });
 
-function startPixelizer(){
+/* function startPixelizer(){
+
+    console.log('bot pixelizador iniciou');
 
     let stream = bot.stream('statuses/filter', { track: '@pixelizarbot' });
 
@@ -60,6 +62,85 @@ function startPixelizer(){
         
 
     });
+} */
+
+function startPixelizer(){
+
+    console.log('bot pixelizador iniciou');
+
+    let stream = bot.stream('statuses/filter', { track: '@pixelizarbot' });
+
+    stream.on('tweet', async tweet=>{
+
+        if(tweet.text.indexOf('@pixelizarbot') !== -1 && tweet.in_reply_to_screen_name !== 'pixelizarbot'){
+
+            console.log(tweet);
+
+            let replyToId = tweet.in_reply_to_status_id_str;
+            console.log(replyToId);
+
+            let tweetId = tweet.id_str;
+            let user = tweet.user.screen_name;
+
+            getImgUris(replyToId).then(uris=>{
+
+                console.log(uris);
+
+                if(uris.length === 0) return false;
+
+                let b64Array = [], promises = [], mediaIds = [];
+
+                uris.forEach(uri=>{
+                    
+                    let promise = pixelize(uri).then(pixelizedImg=>{
+                
+                        let b64 = pixelizedImg.toString('base64');
+                        b64Array.push(b64);
+
+                    });
+
+                    promises.push(promise);
+
+                });
+
+                Promise.all(promises).then(()=>{
+                    
+                    promises = [];
+
+                    b64Array.forEach(b64=>{
+
+                        let promise = twitter.uploadMedia(bot, b64).then(mediaId=>{
+
+                            mediaIds.push(mediaId);
+
+                        });
+
+                        promises.push(promise);
+
+                    });
+
+                    Promise.all(promises).then(()=>{
+
+                        twitter.tweet(bot, `@${user}`, params = {
+                            in_reply_to_status_id: tweetId,
+                            media_ids: mediaIds
+                        }).then(response=>{
+            
+                            console.log('resposta enviada!');
+                        
+                        });
+
+                    });
+
+                });
+
+            });
+
+
+        }
+        
+
+    });
 }
 
 function getImgUris(tweetId = '1285674693450752003'){
@@ -70,19 +151,18 @@ function getImgUris(tweetId = '1285674693450752003'){
 
             if(!err){
 
-                console.log(data.entities.media);
-
-                if(!data.entities.media) return resolve('');
-
-                let medias = data.entities.media;
                 let arrayUris = [];
+                if(!data.extended_entities) return resolve(arrayUris);
+
+                let medias = data.extended_entities.media;
 
                 medias.forEach(media=>{
                     if(media.type === 'photo'){
-                        return resolve(media.media_url);
+                        arrayUris.push(media.media_url);
                     }
-                    return resolve('');
                 });
+
+                resolve(arrayUris);
 
             }
             else{
@@ -112,21 +192,47 @@ function pixelize(imgUrl){
 }
 
 //codigo para teste:
-/* getImgUris().then(uri=>{
+/* getImgUris('1287481880372183047').then(uris=>{
 
-    console.log(uri);
+    console.log(uris);
 
-    if(uri === '') return false;
+    if(uris.length === 0) return false;
+
+    let b64Array = [], promises = [], mediaIds = [];
+
+    uris.forEach(uri=>{
         
-    pixelize(uri).then(pixelizedImg=>{
+        let promise = pixelize(uri).then(pixelizedImg=>{
+    
+            let b64 = pixelizedImg.toString('base64');
+            b64Array.push(b64);
 
-        let b64 = pixelizedImg.toString('base64');
+        });
 
-        twitter.uploadMedia(bot, b64).then(mediaIds=>{
+        promises.push(promise);
 
-            console.log(mediaIds);
+    });
+
+    Promise.all(promises).then(()=>{
+        
+        promises = [];
+
+        b64Array.forEach(b64=>{
+
+            let promise = twitter.uploadMedia(bot, b64).then(mediaId=>{
+
+                mediaIds.push(mediaId);
+
+            });
+
+            promises.push(promise);
+
+        });
+
+        Promise.all(promises).then(()=>{
+
             twitter.tweet(bot, `@enzobonf`, params = {
-                in_reply_to_status_id: '1287196538264080400',
+                in_reply_to_status_id: '1287481880372183047',
                 media_ids: mediaIds
             }).then(response=>{
 
@@ -138,7 +244,10 @@ function pixelize(imgUrl){
 
     });
 
+
 }); */
+
+startPixelizer();
 
 module.exports = {
     start: startPixelizer

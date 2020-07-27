@@ -1,6 +1,6 @@
 
-const enzoBot = require('./enzoBot');
-enzoBot.startBot('"Enzo"', 'pt', 5);
+//const enzoBot = require('./enzoBot');
+//enzoBot.startBot('"Enzo"', 'pt', 5);
 
 const pixelizeBot = require('./pixelizeBot');
 pixelizeBot.start();

@@ -86,7 +86,6 @@ module.exports = {
 
         return new Promise((resolve, reject)=>{
 
-
             bot.post('statuses/update', Object.assign(params, {status: text}), function(err, data, response) {
                 if(!err){0
                     resolve(response);
