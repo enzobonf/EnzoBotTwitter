@@ -119,7 +119,7 @@ module.exports = {
 
     },
 
-    reportViaDm(bot, numRetweets, interval, text = `${numRetweets} retweets em ${interval} hora`){
+    reportViaDm(bot, numRetweets, interval, text = `${numRetweets} retweets em ${interval} hora(s)`){
 
         return new Promise((resolve, reject)=>{
 
