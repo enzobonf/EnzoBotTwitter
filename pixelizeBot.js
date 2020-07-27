@@ -76,6 +76,8 @@ function startPixelizer(){
             
                             console.log('resposta enviada!');
                         
+                        }).catch(err=>{
+                            console.log(err);
                         });
 
                     });
