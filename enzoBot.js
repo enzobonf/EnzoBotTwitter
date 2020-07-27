@@ -12,7 +12,7 @@ const bot = new twit({
 });
 
 let retweetsInTime = 0;
-let messagesInterval = 1; //hora
+let messagesInterval = 2; //hora
 
 let tweetsRetweetados = [];
 
