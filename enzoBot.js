@@ -175,6 +175,7 @@ function searchAndRetweet(q, lang, count){
         console.log('ERRO no setInterval()', e);
     }
 }
+
 module.exports =  {
 
     startBot(q, lang, count){

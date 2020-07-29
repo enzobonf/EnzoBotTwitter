@@ -12,8 +12,6 @@ const bot = new twit({
     access_token_secret: process.env.PIXELIZE_ACCESS_SECRET_TOKEN
 });
 
-startPixelizer();
-
 function startPixelizer(){
 
     console.log('bot pixelizador iniciou');
@@ -27,7 +25,6 @@ function startPixelizer(){
             console.log(tweet);
 
             let replyToId = tweet.in_reply_to_status_id_str;
-            console.log(replyToId);
 
             let tweetId = tweet.id_str;
             let user = tweet.user.screen_name;
@@ -55,8 +52,6 @@ function startPixelizer(){
                 });
 
                 Promise.all(promises).then(()=>{
-
-                    console.log(mediaIds);
 
                     twitter.tweet(bot, `@${user}`, params = {
                         in_reply_to_status_id: tweetId,
