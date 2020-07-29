@@ -60,7 +60,6 @@ function search(q, lang, count){
                             
                             if(tweet.entities.user_mentions.length > 0){
                                 tweet.entities.user_mentions.forEach(user=>{
-                                    if(wordCount(user.screen_name.toLowerCase(), 'enzo') >= 1) usersMentioned.push(user.screen_name.toLowerCase());
                                     tweet.text = (tweet.text).replace(`@${user.screen_name}`, '');
                                 });
                             }
@@ -78,13 +77,9 @@ function search(q, lang, count){
                             //console.log(tweet.text.toLowerCase());
                             //console.log(text.indexOf('enzo'));
         
-                            if(tweet && id && !tweet.retweeted_status && tweetsRetweetados.indexOf(id) === -1 && text.indexOf('enzo') !== -1
-                            && (inResponseTo === null || wordCount(text, 'enzo') >= 1)){
+                            if(tweet && id && !tweet.retweeted_status && tweetsRetweetados.indexOf(id) === -1 && wordCount(text, 'enzo') >= 1){
                                 arrayResponse.push(tweet);
                             }
-                            /* else{
-                                resolve(false);
-                            } */
         
                         }
     

@@ -1,6 +1,6 @@
 
 const enzoBot = require('./enzoBot');
-enzoBot.startBot('"Enzo"', 'pt', 5);
+enzoBot.startBot('Enzo OR Enzinho OR Enzão', 'pt', 7);
 
 const pixelizeBot = require('./pixelizeBot');
 pixelizeBot.start();
