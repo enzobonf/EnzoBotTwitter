@@ -12,6 +12,8 @@ const bot = new twit({
     access_token_secret: process.env.PIXELIZE_ACCESS_SECRET_TOKEN
 });
 
+startPixelizer();
+
 function startPixelizer(){
 
     console.log('bot pixelizador iniciou');
@@ -40,10 +42,11 @@ function startPixelizer(){
 
                 uris.forEach(uri=>{
                     
-                    let promise = pixelize(uri).then(pixelizedImg=>{
+                    let promise = pixelize(uri).then(async pixelizedImg=>{
                 
                         let b64 = pixelizedImg.toString('base64');
-                        b64Array.push(b64);
+                        mediaIds.push(await twitter.uploadMedia(bot, b64));
+                        Promise.resolve();
 
                     });
 
@@ -52,34 +55,18 @@ function startPixelizer(){
                 });
 
                 Promise.all(promises).then(()=>{
+
+                    console.log(mediaIds);
+
+                    twitter.tweet(bot, `@${user}`, params = {
+                        in_reply_to_status_id: tweetId,
+                        media_ids: mediaIds
+                    }).then(response=>{
+        
+                        console.log('resposta enviada!');
                     
-                    promises = [];
-
-                    b64Array.forEach(b64=>{
-
-                        let promise = twitter.uploadMedia(bot, b64).then(mediaId=>{
-
-                            mediaIds.push(mediaId);
-
-                        });
-
-                        promises.push(promise);
-
-                    });
-
-                    Promise.all(promises).then(()=>{
-
-                        twitter.tweet(bot, `@${user}`, params = {
-                            in_reply_to_status_id: tweetId,
-                            media_ids: mediaIds
-                        }).then(response=>{
-            
-                            console.log('resposta enviada!');
-                        
-                        }).catch(err=>{
-                            console.log(err);
-                        });
-
+                    }).catch(err=>{
+                        console.log(err);
                     });
 
                 });
@@ -93,7 +80,7 @@ function startPixelizer(){
     });
 }
 
-function getImgUris(tweetId = '1285674693450752003'){
+function getImgUris(tweetId){
 
     return new Promise((resolve, reject)=>{
 
@@ -142,7 +129,7 @@ function pixelize(imgUrl){
 }
 
 //codigo para teste:
-/* getImgUris('1287481880372183047').then(uris=>{
+/* getImgUris('1287390917272506368').then(uris=>{
 
     console.log(uris);
 
